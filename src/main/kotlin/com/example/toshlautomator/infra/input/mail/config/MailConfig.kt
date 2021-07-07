@@ -47,6 +47,7 @@ class MailConfig(
         receiver.setCancelIdleInterval(30)
         receiver.isShouldMarkMessagesAsRead = false
         receiver.setSimpleContent(true)
+        receiver.setAutoCloseFolder(false)
         return receiver
     }
 
@@ -58,7 +59,10 @@ class MailConfig(
     @Bean
     @Qualifier(value = "imapMailFlow")
     fun imapMailFlow(): IntegrationFlow {
-        return IntegrationFlows.from(Mail.imapIdleAdapter(receiver())).channel(IMAP_CHANNEL).get()
+        return IntegrationFlows.from(
+            Mail.imapIdleAdapter(receiver())
+        ).channel(IMAP_CHANNEL)
+            .get()
     }
 
     private fun javaMailProperties(): Properties {

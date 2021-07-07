@@ -4,6 +4,7 @@ import com.example.toshlautomator.domain.Transaction
 import org.htmlcleaner.CleanerProperties
 import org.htmlcleaner.DomSerializer
 import org.htmlcleaner.HtmlCleaner
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -14,11 +15,17 @@ import javax.xml.xpath.XPathFactory
 
 @Service
 class ColpatriaAccountEmailAdapter : EmailAdapter {
+
+    private val log = LoggerFactory.getLogger(this::class.java)
+
     override fun isResponsible(mimeMessage: MimeMessage): Boolean {
         return mimeMessage.subject.contains("Scotiabank Colpatria en Linea")
     }
 
     override fun adapt(mimeMessage: MimeMessage): Transaction {
+
+        log.info("Colpatria tx received!")
+
         val data = mimeMessage.content.toString()
 
         val tagNode = HtmlCleaner().clean(data)
